@@ -1,6 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+
+class Pessoa(models.Model):    
+    nome         = models.CharField(max_length=100, verbose_name="Nome")        
+    user         = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='pessoas', verbose_name="usuario")
+    is_active    = models.BooleanField(default=True, verbose_name="Ativo")
+    created_at   = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+    
+    class Meta:        
+        ordering = ['nome']
+    
+    def __str__(self):
+        return f"{self.nome}"
+
+
 class Rota(models.Model):
     nome       = models.CharField(max_length=100, verbose_name="Nome da Rota")
     distancia  = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Distância (km)")
@@ -16,7 +32,7 @@ class Rota(models.Model):
         return f"{self.nome} ({self.distancia} km)"
 
 class Veiculo(models.Model):    
-    proprietario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='veiculos', verbose_name="Proprietário")
+    proprietario = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='veiculos', verbose_name="Proprietário")
     modelo       = models.CharField(max_length=100, verbose_name="Modelo")    
     consumo      = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Consumo (km/l)")
     capacidade   = models.PositiveSmallIntegerField(default=4, verbose_name="Capacidade")
@@ -122,3 +138,4 @@ class Participante(models.Model):
     
     def __str__(self):
         return f"{self.user} - {self.carona}"
+
