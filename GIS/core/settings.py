@@ -36,8 +36,8 @@ DEBUG = str2bool(os.environ.get('DEBUG'))
 # Docker HOST
 ALLOWED_HOSTS = [
     '*',
-    'gis-3-git-main-stefanus-projects-37687da3.vercel.app/',
-    'gis-3.vercel.app/',
+    'gis-3-git-main-stefanus-projects-37687da3.vercel.app',
+    'gis-3.vercel.app',
     '.vercel.app',
     ]
 
