@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
       {
-        "src": "core/wsgi.py",
+        "src": "gis/core/wsgi.py",
         "use": "@vercel/python",
         "config": {
           "maxLambdaSize": "15mb",
@@ -10,7 +10,7 @@
         }
       },
       {
-        "src": "build_files.sh",
+        "src": "gis/build.sh",
         "use": "@vercel/static-build",
         "config": {
           "distDir": "staticfiles_build"
@@ -24,7 +24,7 @@
       },
       {
         "src": "/(.*)",
-        "dest": "core/wsgi.py"
+        "dest": "gis/core/wsgi.py"
       }
     ]
   }
