@@ -37,7 +37,7 @@ DEBUG = str2bool(os.environ.get('DEBUG'))
 ALLOWED_HOSTS = [
     '*',
     'gis-3-git-main-stefanus-projects-37687da3.vercel.app/',
-    'gis-3.vercel.app',
+    'gis-3.vercel.app/',
     '.vercel.app',
     ]
 
@@ -52,6 +52,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     'admin_coreui.apps.AdminCoreuiConfig',
     "django.contrib.admin",
     "django.contrib.auth",
