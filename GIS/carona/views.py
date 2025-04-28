@@ -27,10 +27,10 @@ class CaronaCreate(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)        
         self.object.save()
-        participantes = form.cleaned_data.get('participantes', [])
+        participantes = form.cleaned_data.get('participants', [])
         for participante in participantes:
-            Participante.objects.create(carona=self.object.carona, pessoa=participante)
-        participantes.save()
+            Participante.objects.create(carona=self.object, pessoa=participante)
+        participante.save()
         return HttpResponseRedirect(f'/carona/index/')
 
 

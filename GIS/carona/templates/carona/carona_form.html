@@ -29,195 +29,69 @@
             <div class="card-header"><strong>Form control</strong><span class="small ms-1">Basic example</span></div>
             <div class="card-body">
               <div class="example">
-                <ul class="nav nav-underline-border" role="tablist">
-                  <li class="nav-item"><a class="nav-link active" data-coreui-toggle="tab" href="#preview-1000" role="tab">
-                      <svg class="icon me-2">
-                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-media-play"></use>
-                      </svg>Preview</a></li>
-                  <li class="nav-item"><a class="nav-link" href="https://coreui.io/docs/forms/form-control/" target="_blank">
-                      <svg class="icon me-2">
-                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-code"></use>
-                      </svg>Code</a></li>
-                </ul>
+                <form method="post">
+                    {% csrf_token %}
                 <div class="tab-content rounded-bottom">
                   <div class="tab-pane p-3 active preview" role="tabpanel" id="preview-1000">
                     <div class="mb-3">
-                      <label class="form-label" for="exampleFormControlInput1">Email address</label>
-                      <input class="form-control" id="exampleFormControlInput1" type="email" placeholder="name@example.com">
+                      <label class="form-label" for="{{ form.data.id_for_label }}">Data</label>
+                      <input class="form-control" id="{{ form.data.id_for_label }}" type="date" name="{{ form.data.name }}" value="{{ form.date.value|date:'Y-m-d'|default:'' }}">
                     </div>
                     <div class="mb-3">
-                      <label class="form-label" for="exampleFormControlTextarea1">Example textarea</label>
-                      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        <label class="form-label" for="{{ form.rota.id_for_label }}">Rota</label>
+                        <select name="{{ form.rota.name }}" id="{{ form.rota.id_for_label }}" class="form-select" aria-label="Default select example">
+                            {% for choice in form.rota.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.routa.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                {{ choice.1 }}
+                        </option>
+                            {% endfor %}
+                          </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label" for="{{ form.direction.id_for_label }}">Direção</label>
+                        <select name="{{ form.direction.name }}" id="{{ form.direction.id_for_label }}" class="form-select" aria-label="Default select example">
+                            {% for choice in form.direction.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.direction.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                {{ choice.1 }}
+                        </option>
+                            {% endfor %}
+                          </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label" for="{{ form.veiculo.id_for_label }}">Veículo</label>
+                        <select name="{{ form.veiculo.name }}" id="{{ form.veiculo.id_for_label }}" class="form-select" aria-label="Default select example">
+                            {% for choice in form.veiculo.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.veiculo.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                {{ choice.1 }}
+                        </option>
+                            {% endfor %}
+                          </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label" for="{{ form.participants.id_for_label }}">Participantes</label>
+                        <select multiple name="{{ form.participants.name }}" id="{{ form.participants.id_for_label }}" class="form-select" aria-label="Default select example">
+                            {% for choice in form.participants.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.participants.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                {{ choice.1 }}
+                        </option>
+                            {% endfor %}
+                          </select>
+                      </div>
+                    <div class="mb-3">
+                      <label class="form-label" for="{{ form.preco_km.id_for_label }}">Preço KM</label>
+                      <textarea class="form-control" id="{{ form.preco_km.id_for_label }}"></textarea>
                     </div>
-                  </div>
+                  </div>{{ form.as_p }}
                 </div>
+                <button type="submit" class="btn-primary">
+                    <i class="bx bx-save mr-2"></i>Salvar
+                </button>
+                </form>
               </div>
             </div>
           </div>
         </div>
     </div>
 </div>
+
 {% endblock content %}
-
-{% block content %}
-<div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-            {% if form.instance.pk %}Editar{% else %}Nova{% endif %} Carona
-        </h1>
-        <a href="" class="btn-secondary">
-            <i class="bx bx-arrow-back mr-2"></i>Voltar
-        </a>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <form method="post" class="space-y-4">
-            {% csrf_token %}
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <label for="{{ form.date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Data
-                    </label>
-                    <input type="date" name="{{ form.date.name }}" id="{{ form.date.id_for_label }}" 
-                           value="{{ form.date.value|date:'Y-m-d'|default:'' }}" 
-                           class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    {% if form.date.errors %}
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.date.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="{{ form.route.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Rota
-                    </label>
-                    <select name="{{ form.route.name }}" id="{{ form.route.id_for_label }}" 
-                            class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        {% for choice in form.route.field.choices %}
-                        <option value="{{ choice.0 }}" {% if form.route.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                            {{ choice.1 }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    {% if form.route.errors %}
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.route.errors.0 }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="space-y-2">
-                    <label for="{{ form.driver.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Motorista
-                    </label>
-                    <select name="{{ form.driver.name }}" id="{{ form.driver.id_for_label }}" 
-                            class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        {% for choice in form.driver.field.choices %}
-                        <option value="{{ choice.0 }}" {% if form.driver.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                            {{ choice.1 }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    {% if form.driver.errors %}
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.driver.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="{{ form.vehicle.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Veículo
-                    </label>
-                    <select name="{{ form.vehicle.name }}" id="{{ form.vehicle.id_for_label }}" 
-                            class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        {% for choice in form.vehicle.field.choices %}
-                        <option value="{{ choice.0 }}" {% if form.vehicle.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                            {{ choice.1 }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    {% if form.vehicle.errors %}
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.vehicle.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="{{ form.direction.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Direção
-                    </label>
-                    <select name="{{ form.direction.name }}" id="{{ form.direction.id_for_label }}" 
-                            class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        {% for choice in form.direction.field.choices %}
-                        <option value="{{ choice.0 }}" {% if form.direction.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                            {{ choice.1 }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    {% if form.direction.errors %}
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.direction.errors.0 }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <label for="{{ form.fuel_price.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Preço do Combustível (R$)
-                    </label>
-                    <input type="number" step="0.1" name="{{ form.fuel_price.name }}" id="{{ form.fuel_price.id_for_label }}" 
-                           value="{{ form.fuel_price.value|default:'' }}" 
-                           class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                           placeholder="Ex: 2.1">
-                   <!-- <select name="{{ form.fuel_price.name }}" id="{{ form.fuel_price.id_for_label }}" 
-                            class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        {% for choice in form.fuel_price.field.choices %}
-                        <option value="{{ choice.0 }}" {% if form.fuel_price.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                            {{ choice.1 }}
-                        </option>
-                        {% endfor %}
-                    </select> -->
-                    {% if form.fuel_price.errors %}
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.fuel_price.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="{{ form.participants.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Participantes
-                    </label>
-                    <select name="{{ form.participants.name }}" id="{{ form.participants.id_for_label }}" multiple
-                            class="form-multiselect mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            size="5">
-                        {% for choice in form.participants.field.choices %}
-                        <option value="{{ choice.0 }}" {% if choice.0 in form.participants.value %}selected{% endif %}>
-                            {{ choice.1 }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Segure Ctrl (ou Cmd) para selecionar múltiplos participantes</p>
-                    {% if form.participants.errors %}
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.participants.errors.0 }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="space-y-2">
-                <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Observações
-                </label>
-                <textarea name="{{ form.notes.name }}" id="{{ form.notes.id_for_label }}" rows="3"
-                          class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                          placeholder="Observações sobre a carona">{{ form.notes.value|default:'' }}</textarea>
-                {% if form.notes.errors %}
-                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.notes.errors.0 }}</p>
-                {% endif %}
-            </div>
-            
-            <div class="flex justify-end pt-4">
-                <button type="submit" class="btn-primary">
-                    <i class="bx bx-save mr-2"></i>Salvar
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-{% endblock %}

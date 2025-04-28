@@ -80,7 +80,7 @@ class Carona(models.Model):
         ('one_way', 'Somente Ida'),
         ('round_trip', 'Ida e Volta'),
     )
-    id              = models.AutoField(db_column='id',primary_key=True)
+    id         = models.AutoField(db_column='id',primary_key=True)
     data       = models.DateField(verbose_name="data")
     rota       = models.ForeignKey(Rota, on_delete=models.PROTECT, related_name='caronas', verbose_name="Rota")
     veiculo    = models.ForeignKey(Veiculo, on_delete=models.PROTECT, related_name='caronas', verbose_name="Veículo")
@@ -129,18 +129,18 @@ class Participante(models.Model):
     """
     Model for participants in a carpool.
     """
-    id              = models.AutoField(db_column='id',primary_key=True)
-    carona = models.ForeignKey(Carona, on_delete=models.CASCADE, related_name='participantes', verbose_name="Carona")        
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carona_participantes', verbose_name="Participante")
+    id         = models.AutoField(db_column='id',primary_key=True)
+    carona     = models.ForeignKey(Carona, on_delete=models.CASCADE, related_name='participantes', verbose_name="Carona")        
+    pessoa       = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='carona_participantes', verbose_name="Participante")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = "Participante de Carona"
         verbose_name_plural = "Participantes de Carona"
-        unique_together = ('carona', 'user')
-        ordering = ['carona', 'user']
+        unique_together = ('carona', 'pessoa')
+        ordering = ['carona', 'pessoa']
     
     def __str__(self):
-        return f"{self.user} - {self.carona}"
+        return f"{self.pessoa} - {self.carona}"
 
