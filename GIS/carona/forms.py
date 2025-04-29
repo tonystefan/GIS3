@@ -5,13 +5,23 @@ class CaronaForm(forms.ModelForm):
     participants = forms.ModelMultipleChoiceField(
         queryset=Pessoa.objects.all(),
         required=False,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.SelectMultiple(attrs={'class':'form-control'}),
         label="Participantes"
     )
     
     class Meta:
         model = Carona
-        fields = ['data', 'rota', 'veiculo', 'direction', 'preco_km']
+        fields = ['data', 'rota', 'veiculo', 'direction']
+
+        widgets = {                         
+            'data': forms.DateInput(attrs={'data-mask':'00/00/0000','class':'form-control', 'type':'date'}), 
+            'rota': forms.Select(attrs={'class':'form-select'}),                                                  
+            'direction': forms.Select(attrs={'class':'form-select'}),                                                  
+            'veiculo': forms.Select(attrs={'class':'form-select'}),                                                  
+            
+            }
+
+        
         
     
     def __init__(self, *args, **kwargs):

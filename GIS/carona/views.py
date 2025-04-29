@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
+import datetime
 from .models import(
     Carona,
     Participante
@@ -23,6 +24,11 @@ class CaronaCreate(CreateView):
     model = Carona
     template_name = 'carona/carona_form.html'
     form_class = CaronaForm    
+
+    def get_initial(self, *args, **kwargs):
+        initial = super(CaronaCreate, self).get_initial(**kwargs)             
+        initial['data'] = datetime.date.today()        
+        return initial
     
     def form_valid(self, form):
         self.object = form.save(commit=False)        
@@ -30,7 +36,7 @@ class CaronaCreate(CreateView):
         participantes = form.cleaned_data.get('participants', [])
         for participante in participantes:
             Participante.objects.create(carona=self.object, pessoa=participante)
-        participante.save()
-        return HttpResponseRedirect(f'/carona/index/')
+        participante.save()        
+        return HttpResponseRedirect(f'/carona/')
 
 

@@ -8,14 +8,10 @@
     <div class="container-fluid px-4">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb my-0">
-          <li class="breadcrumb-item"><a href="#">Home</a>
+          <li class="breadcrumb-item"><a href="#">Carona</a>
           </li>
-          <li class="breadcrumb-item"><span>Components</span>
-          </li>
-          <li class="breadcrumb-item"><span>Forms</span>
-          </li>
-          <li class="breadcrumb-item active"><span>Form Control</span>
-          </li>
+          <li class="breadcrumb-item"><span>Nova Carona</span>
+          </li>          
         </ol>
       </nav>
     </div>
@@ -26,7 +22,7 @@
       <div class="row">
         <div class="col-12">
           <div class="card mb-4">
-            <div class="card-header"><strong>Form control</strong><span class="small ms-1">Basic example</span></div>
+            <div class="card-header"><strong>Registro</strong><span class="small ms-1"></span></div>
             <div class="card-body">
               <div class="example">
                 <form method="post">
@@ -34,58 +30,14 @@
                 <div class="tab-content rounded-bottom">
                   <div class="tab-pane p-3 active preview" role="tabpanel" id="preview-1000">
                     <div class="mb-3">
-                      <label class="form-label" for="{{ form.data.id_for_label }}">Data</label>
-                      <input class="form-control" id="{{ form.data.id_for_label }}" type="date" name="{{ form.data.name }}" value="{{ form.date.value|date:'Y-m-d'|default:'' }}">
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Salvar</button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="{{ form.rota.id_for_label }}">Rota</label>
-                        <select name="{{ form.rota.name }}" id="{{ form.rota.id_for_label }}" class="form-select" aria-label="Default select example">
-                            {% for choice in form.rota.field.choices %}
-                            <option value="{{ choice.0 }}" {% if form.routa.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                                {{ choice.1 }}
-                        </option>
-                            {% endfor %}
-                          </select>
-                      </div>
-                      <div class="mb-3">
-                        <label class="form-label" for="{{ form.direction.id_for_label }}">Direção</label>
-                        <select name="{{ form.direction.name }}" id="{{ form.direction.id_for_label }}" class="form-select" aria-label="Default select example">
-                            {% for choice in form.direction.field.choices %}
-                            <option value="{{ choice.0 }}" {% if form.direction.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                                {{ choice.1 }}
-                        </option>
-                            {% endfor %}
-                          </select>
-                      </div>
-                      <div class="mb-3">
-                        <label class="form-label" for="{{ form.veiculo.id_for_label }}">Veículo</label>
-                        <select name="{{ form.veiculo.name }}" id="{{ form.veiculo.id_for_label }}" class="form-select" aria-label="Default select example">
-                            {% for choice in form.veiculo.field.choices %}
-                            <option value="{{ choice.0 }}" {% if form.veiculo.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                                {{ choice.1 }}
-                        </option>
-                            {% endfor %}
-                          </select>
-                      </div>
-                      <div class="mb-3">
-                        <label class="form-label" for="{{ form.participants.id_for_label }}">Participantes</label>
-                        <select multiple name="{{ form.participants.name }}" id="{{ form.participants.id_for_label }}" class="form-select" aria-label="Default select example">
-                            {% for choice in form.participants.field.choices %}
-                            <option value="{{ choice.0 }}" {% if form.participants.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                                {{ choice.1 }}
-                        </option>
-                            {% endfor %}
-                          </select>
-                      </div>
-                    <div class="mb-3">
-                      <label class="form-label" for="{{ form.preco_km.id_for_label }}">Preço KM</label>
-                      <textarea class="form-control" id="{{ form.preco_km.id_for_label }}"></textarea>
-                    </div>
-                  </div>{{ form.as_p }}
+                    
+                  </div>
                 </div>
-                <button type="submit" class="btn-primary">
-                    <i class="bx bx-save mr-2"></i>Salvar
-                </button>
+                
+                
                 </form>
               </div>
             </div>

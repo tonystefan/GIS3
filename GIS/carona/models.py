@@ -52,7 +52,7 @@ class Veiculo(models.Model):
         return f"{self.modelo} ({self.proprietario})"
 
 class PrecoKM(models.Model):
-    id              = models.AutoField(db_column='id',primary_key=True)
+    id         = models.AutoField(db_column='id',primary_key=True)
     preco      = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preço KM")
     data       = models.DateField(verbose_name="Data de Vigência")
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='precosKM', verbose_name="Criado por")
@@ -101,7 +101,7 @@ class Carona(models.Model):
     def save(self, *args, **kwargs):
         # Set fuel price if not provided
         if not self.preco_km:
-            self.preco_km = PrecoKM.get_current_price()
+            self.preco_km = PrecoKM.objects.latest('data').preco
         super().save(*args, **kwargs)
     
     @property
