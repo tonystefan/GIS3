@@ -3,6 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
+from django.views.generic.base import TemplateView
+
+
 import datetime
 from .models import(
     Carona,
@@ -15,10 +18,13 @@ from .forms import(
 
 # Create your views here.
 
-def index(request):
-
-    # Page from the theme 
-    return render(request, 'carona/index.html')
+class Index(TemplateView):
+    template_name = 'carona/index.html'
+    
+    def get(self, *args, **kwargs):
+        context = {}    
+        context['carona_list'] = Carona.objects.filter()
+        return render(self.request, self.template_name, context)
 
 class CaronaCreate(CreateView):
     model = Carona

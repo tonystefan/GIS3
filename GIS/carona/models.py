@@ -131,7 +131,7 @@ class Participante(models.Model):
     """
     id         = models.AutoField(db_column='id',primary_key=True)
     carona     = models.ForeignKey(Carona, on_delete=models.CASCADE, related_name='participantes', verbose_name="Carona")        
-    pessoa       = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='carona_participantes', verbose_name="Participante")
+    pessoa     = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='carona_participantes', verbose_name="Participante")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

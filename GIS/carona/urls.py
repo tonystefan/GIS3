@@ -4,11 +4,12 @@ from . import views
 from django.views.generic.base import View
 
 from .views import(
-    CaronaCreate
+    CaronaCreate,
+    Index,
 )
-app_name = 'carona'
+
 
 urlpatterns = [
-    path('carona/', views.index, name='index'),
+    path('index', Index.as_view(), name='carona_index'),
     path('carona_create',CaronaCreate.as_view(), name='carona_create'),
 ]
