@@ -42,7 +42,15 @@ ALLOWED_HOSTS = [
     ]
 
 # Add here your deployment HOSTS
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://localhost:5085',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:5085',
+    'https://gis2.vercel.app/',
+    'https://gis-sigma-self.vercel.app/',
+    'https://gis-stefanus-projects-37687da3.vercel.app/'
+    ]
 
 #Render Context
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
