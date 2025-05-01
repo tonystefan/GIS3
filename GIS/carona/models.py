@@ -31,7 +31,7 @@ class Rota(models.Model):
         verbose_name_plural = "Rotas"        
     
     def __str__(self):
-        return f"{self.nome} ({self.distancia} km)"
+        return f"{self.nome}"
 
 class Veiculo(models.Model):    
     id              = models.AutoField(db_column='id',primary_key=True)

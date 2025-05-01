@@ -19,14 +19,14 @@
   <div class="body flex-grow-1">
     <div class="container-lg px-4">
       <div class="card mb-4">
-        <div class="card-header"> Ultimos Rolês</div>
+        <div class="card-header"> Galera</div>
         <div class="card-body">
           <div class="example">
             <ul class="nav nav-underline-border" role="tablist">
-              <li class="nav-item"><a class="nav-link active"  href="{% url 'carona_create' %}" role="tab">
+              <li class="nav-item"><a class="nav-link"  href="{% url 'carona_create' %}" role="tab">
                 <svg class="icon me-2">                    
                 </svg>Nova</a></li>
-              <li class="nav-item"><a class="nav-link"  href="{% url 'participantes_uso' %}" role="tab">
+              <li class="nav-item"><a class="nav-link active"  href="{% url 'participantes_uso' %}" role="tab">
                 <svg class="icon me-2">                    
                 </svg>Resumo</a></li>              
             </ul>
@@ -37,28 +37,20 @@
                     
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Rota</th>
-                      <th scope="col">Sentido</th>
-                      <th scope="col">km</th>
-                      <th scope="col">Carro</th>
-                      <th scope="col">Custo</th>
-                      <th scope="col">Galera</th>
+                      <th scope="col">Pessoa</th>
+                      <th scope="col">Uso</th>
+                      <th scope="col">Custo</th>                      
                     </tr>
 
                   </thead>
                   <tbody>
-                    {% for viagem in carona_list %}
+                    {{pessoa_list}}
+                    {% for pessoa in pessoa_list %}
                     <tr>
                       <th scope="row">{{count}}</th>
-                      <td>{{ viagem.rota }}</td>
-                      <td>{{ viagem.get_direction_display }}</td>
-                      <td>{{ viagem.distancia_total }}</td>
-                      <td>{{ viagem.veiculo }}</td>
-                      <td>{{ viagem.custo_por_pessoa }}</td>
-                      <td>
-                        {% for participante in viagem.participantes.all %}
-                          {{ participante.pessoa }}
-                        {% endfor%}
+                      <td>{{ pessoa.pessoa__nome }}</td>
+                      <td>{{ pessoa}} km</td>
+                      <td>R$ {{ pessoa }}</td>                                            
                       </td>
                     </tr>
                     {% endfor%}
