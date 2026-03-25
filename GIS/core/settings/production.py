@@ -2,7 +2,10 @@ from decouple import config
 
 DEBUG = False
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Serve static files via WhiteNoise sem precisar de collectstatic prévio.
+# CompressedManifest requer collectstatic; WhiteNoiseStorage serve diretamente.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
