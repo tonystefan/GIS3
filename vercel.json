@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "GIS/core/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "runtime": "python3.12"
+      }
+    },
+    {
+      "src": "GIS/build_files.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "GIS/staticfiles"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "GIS/core/wsgi.py"
+    }
+  ],
+  "env": {
+    "DJANGO_ENV": "production",
+    "DJANGO_SETTINGS_MODULE": "core.settings"
+  }
+}
