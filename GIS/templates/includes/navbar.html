@@ -10,10 +10,10 @@
         
     </button>
     <ul class="header-nav d-none d-lg-flex">
-      <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Settings</a></li>
-      <li class="nav-item"><a class="nav-link" href="{% url 'carona_index' %}">Carona</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Dashboard</a></li>
+      {% if user.is_authenticated and not user.is_superuser %}
+      <li class="nav-item"><a class="nav-link" href="{% url 'transcricao:index' %}">Transcrição</a></li>
+      {% endif %}
     </ul>
     <ul class="header-nav ms-auto">
       <li class="nav-item"><a class="nav-link" href="#">

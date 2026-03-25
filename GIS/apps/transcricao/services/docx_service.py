@@ -135,9 +135,11 @@ class DocxService:
                     for cell in row.cells:
                         _set_cell_bg(cell, 'EEF2FF')
 
-        # --- Conteúdo completo (opcional — seção colapsada) ---
-        doc.add_paragraph()
-        add_section('Registro Completo da Transcrição', ata.conteudo_completo)
+        # --- Transcrição original (texto real transcrito, não resumo) ---
+        transcricao = ata.job.transcricao_processada or ata.job.transcricao_raw
+        if transcricao:
+            doc.add_paragraph()
+            add_section('Registro Completo da Transcrição', transcricao)
 
         # --- Rodapé ---
         doc.add_paragraph()

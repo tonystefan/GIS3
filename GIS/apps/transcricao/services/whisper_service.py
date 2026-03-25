@@ -19,22 +19,45 @@ MAX_BYTES = 24 * 1024 * 1024  # 24MB (margem de segurança do limite de 25MB)
 
 SUPPORTED_FORMATS = {'.mp3', '.mp4', '.m4a', '.wav', '.ogg', '.webm', '.flac'}
 
+# Prompt do Whisper: deve conter APENAS vocabulário/contexto, nunca instruções.
+# Instruções no prompt causam alucinações (Whisper repete o texto do prompt na saída).
 BASE_PROMPT = (
-    "Reunião de trabalho em uma fábrica têxtil da região Sul de Minas Gerais. "
-    "Os participantes têm sotaque mineiro característico. "
-    "Transcreva fielmente o que foi dito, mantendo a fala natural dos participantes. "
+    "Fábrica têxtil, Sul de Minas Gerais. "
+    "Reunião de trabalho. Sotaque mineiro."
 )
+
+# Padrões de alucinação conhecidos do Whisper — removidos em pós-processamento.
+_HALLUCINATION_PATTERNS = [
+    # Alucinação de YouTube (muito comum com o Whisper)
+    r'[Ss]ubscri[bv][ae][^.]*sininho[^.]*\.?',
+    r'[Aa]tive o sininho[^.]*\.?',
+    r'[Ss]e inscreva no canal[^.]*\.?',
+    r'[Cc]urta e compartilhe[^.]*\.?',
+    # Prompt antigo sendo repetido
+    r'[Tt]ranscriv[ae][-\s]?[sS]e[^.]*\.?',
+    r'[Tt]ranscri[bv][ae] (?:fielmente )?o que foi dito[^.]*\.?',
+    r'[Mm]antendo a fala natural dos participantes[^.]*\.?',
+    r'[Aa]ten[çc][aã]o aos termos t[eé]cnicos[^.]*\.?',
+    # Créditos de legendas
+    r'[Tt]ranscri[çc][aã]o e [Ll]egendas[\w\s]*',
+    r'[Ll]egendas[\w\s]{0,30}(?:\n|$)',
+]
+
+
+def _remove_hallucinations(text: str) -> str:
+    """Remove alucinações clássicas do Whisper da transcrição."""
+    for pattern in _HALLUCINATION_PATTERNS:
+        text = re.sub(pattern, '', text, flags=re.IGNORECASE)
+    # Remove linhas que ficaram vazias após limpeza
+    lines = [l for l in text.splitlines() if l.strip()]
+    return '\n'.join(lines)
 
 
 def _build_glossary_prompt(termos: list) -> str:
     if not termos:
         return BASE_PROMPT
     termos_str = ', '.join(t.termo_correto for t in termos[:80])
-    return (
-        BASE_PROMPT
-        + f"Termos técnicos do setor têxtil que podem aparecer: {termos_str}. "
-        "Priorize a grafia correta desses termos quando o contexto indicar."
-    )
+    return BASE_PROMPT + f" {termos_str}."
 
 
 def _split_audio_pydub(audio_bytes: bytes, filename: str, chunk_duration_ms: int = 10 * 60 * 1000) -> list[tuple[bytes, str]]:
@@ -107,7 +130,7 @@ class WhisperService:
 
         duration = int(response.duration) if hasattr(response, 'duration') and response.duration else None
         return {
-            'text': response.text,
+            'text': _remove_hallucinations(response.text),
             'duration_seconds': duration,
         }
 

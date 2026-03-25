@@ -4,6 +4,7 @@ Padrão: views leves que delegam para os services.
 HTMX: respostas parciais (partials) para listas e polling de status.
 """
 import json
+import threading
 
 from django.conf import settings
 from django.contrib import messages
@@ -154,7 +155,8 @@ class JobCreateView(LoginRequiredMixin, View):
             audio_file=audio_file,
             onedrive_file_name=audio_file.name,
         )
-        messages.success(request, f'"{audio_file.name}" enviado. Aguardando processamento.')
+        _trigger_processing(job)
+        messages.success(request, f'"{audio_file.name}" enviado. Processamento iniciado.')
         return redirect('transcricao:job_detail', pk=job.pk)
 
 
@@ -176,7 +178,8 @@ class JobCreateOneDriveView(LoginRequiredMixin, View):
             onedrive_file_name=file_name,
             onedrive_folder_path=folder_path,
         )
-        messages.success(request, f'Job criado para "{file_name}". Aguardando processamento.')
+        _trigger_processing(job)
+        messages.success(request, f'Job criado para "{file_name}". Processamento iniciado.')
         return redirect('transcricao:job_detail', pk=job.pk)
 
 
@@ -257,23 +260,46 @@ class DownloadDocxView(LoginRequiredMixin, View):
 # --------------------------------------------------------------------------- #
 
 class CronProcessView(View):
-    """Chamado por cron externo para processar um job pendente."""
+    """
+    Chamado por Vercel Cron Jobs (header Authorization: Bearer <CRON_SECRET>)
+    ou manualmente via ?secret= para testes.
+    """
 
     def get(self, request):
-        secret = request.GET.get('secret', '')
-        if not settings.CRON_SECRET or secret != settings.CRON_SECRET:
+        if not self._authorized(request):
             return HttpResponse(status=403)
 
-        from django.core.management import call_command
-        import io as _io
-        out = _io.StringIO()
-        call_command('process_transcricao', '--limit', '1', stdout=out)
-        return JsonResponse({'output': out.getvalue()})
+        from apps.transcricao.services.processing_service import process_pending
+        count = process_pending(limit=1)
+        return JsonResponse({'processed': count})
+
+    def _authorized(self, request) -> bool:
+        if not settings.CRON_SECRET:
+            return False
+        # Vercel injeta: Authorization: Bearer <CRON_SECRET>
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header == f'Bearer {settings.CRON_SECRET}':
+            return True
+        # Fallback para testes manuais: ?secret=
+        return request.GET.get('secret', '') == settings.CRON_SECRET
 
 
 # --------------------------------------------------------------------------- #
 # Helpers
 # --------------------------------------------------------------------------- #
+
+def _trigger_processing(job: TranscricaoJob):
+    """Dispara o processamento do job em background thread (desenvolvimento e Vercel)."""
+    from apps.transcricao.services.processing_service import process_job
+    from django.db import connection
+
+    def run():
+        connection.close()  # cada thread precisa de sua própria conexão
+        process_job(job)
+
+    t = threading.Thread(target=run, daemon=True)
+    t.start()
+
 
 def _render_partial(request, template_name: str, context: dict) -> HttpResponse:
     from django.template.loader import render_to_string

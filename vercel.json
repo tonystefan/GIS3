@@ -19,5 +19,11 @@
   "env": {
     "DJANGO_ENV": "production",
     "DJANGO_SETTINGS_MODULE": "core.settings"
-  }
+  },
+  "crons": [
+    {
+      "path": "/transcricao/api/cron/",
+      "schedule": "* * * * *"
+    }
+  ]
 }
