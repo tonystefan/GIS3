@@ -8,20 +8,9 @@
         "maxLambdaSize": "50mb",
         "runtime": "python3.12"
       }
-    },
-    {
-      "src": "GIS/build_files.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "GIS/staticfiles"
-      }
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "GIS/core/wsgi.py"
