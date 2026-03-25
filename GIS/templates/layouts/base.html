@@ -1,27 +1,46 @@
-<!DOCTYPE html><!--
-  * CoreUI - Free Bootstrap Admin Template
-  * @version v5.0.0
-  * @link https://coreui.io/product/free-bootstrap-admin-template/
-  * Copyright (c) 2024 creativeLabs Łukasz Holeczek
-  * Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
-  -->
-{% load i18n static admin_coreui %}
-{% get_current_language as LANGUAGE_CODE %}
-{% get_current_language_bidi as LANGUAGE_BIDI %}
-{% get_direction as direction %}
-{% get_admin_setting as admin_setting %}
-<html lang="en">
-    <head>
-      {% include "includes/head.html" %}
-      {% block extrahead %}{% endblock extrahead %}
-      {% block extra_css %}{% endblock extra_css %}
-    </head>
-    <body>
-      {% include 'includes/sidebar.html' %}
-      {% block content %}{% endblock content %}
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-gray-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Plataforma GIS{% endblock %}</title>
 
-      {% include "includes/scripts.html" %}
-      {% block extra_js %} {% endblock extra_js %}
-        
-    </body>
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#4f46e5', dark: '#4338ca', light: '#818cf8' },
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full font-sans" hx-boost="false">
+  {% block body %}{% endblock %}
+
+  <!-- Toast container (HTMX OOB) -->
+  <div id="toast-container"
+       class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"
+       aria-live="polite">
+  </div>
+
+  {% block extra_js %}{% endblock %}
+</body>
 </html>

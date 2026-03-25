@@ -1,64 +1,68 @@
+{% extends "layouts/base.html" %}
 
-{% extends 'layouts/base-fullscreen.html' %}
+{% block title %}Entrar — GIS Plataforma{% endblock %}
 
-{% block content %}
-  
-<div class="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="card-group d-block d-md-flex row">
-          <div class="card col-md-7 p-4 mb-0">
-            <div class="card-body">
-              <h1>Login</h1>
-              <p class="text-body-secondary">Sign In to your account</p>
-              <form action="" method="post">
-                {% csrf_token %}
-                
-                {% if form.non_field_errors %}
-                  {% for error in form.non_field_errors %}
-                    <div class="text-danger mb-3">{{ error }}</div>
-                  {% endfor %}
-                {% endif %}
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div class="w-full max-w-md">
 
-                {% for field in form %}
-                  <div class="input-group mb-3">
-                    <span class="input-group-text">
-                      <svg class="icon">
-                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
-                      </svg>
-                    </span>
-                    {{ field }}
-                  </div>
-                {% endfor %}
-
-              <div class="row">
-                <div class="col-6">
-                  <button class="btn btn-primary px-4" type="submit">Login</button>
-                </div>
-              </form>
-                <div class="col-6 text-end">
-                  <a href="{% url "password_reset" %}" class="btn btn-link px-0">Forgot password?</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card col-md-5 text-white bg-primary py-5">
-            <div class="card-body text-center">
-              <div>
-                <h2>Sign up</h2>
-                <p>
-                  Add your credentias and join the community today.
-                </p>
-                <a href="{% url 'register' %}" class="btn btn-lg btn-outline-light mt-3" type="button">Register Now!</a>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-4">
+        <svg class="w-9 h-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
       </div>
+      <h1 class="text-2xl font-bold text-gray-900">GIS Plataforma</h1>
+      <p class="text-gray-500 text-sm mt-1">Entre na sua conta para continuar</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg border border-red-200">
+          {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+
+        <div>
+          <label for="{{ form.username.id_for_label }}"
+                 class="block text-sm font-medium text-gray-700 mb-1">Usuário</label>
+          <input type="text"
+                 name="{{ form.username.html_name }}"
+                 id="{{ form.username.id_for_label }}"
+                 autocomplete="username"
+                 class="w-full px-4 py-2.5 rounded-lg border
+                        {% if form.username.errors %}border-red-300 bg-red-50{% else %}border-gray-300{% endif %}
+                        text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                 value="{{ form.username.value|default:'' }}">
+        </div>
+
+        <div>
+          <label for="{{ form.password.id_for_label }}"
+                 class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+          <input type="password"
+                 name="{{ form.password.html_name }}"
+                 id="{{ form.password.id_for_label }}"
+                 autocomplete="current-password"
+                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <button type="submit"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold
+                       py-2.5 px-4 rounded-lg text-sm transition-colors focus:outline-none
+                       focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          Entrar
+        </button>
+      </form>
     </div>
   </div>
 </div>
-{% endblock content %}
-  
- 
+{% endblock %}

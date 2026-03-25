@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-# exit on error
+set -e
 
-echo "Building the project..."
+echo "==> Instalando dependências..."
 pip install -r requirements.txt
 
-echo "Make Migration..."
-python3.9 manage.py makemigrations --noinput
-python3.9 manage.py migrate --noinput
+echo "==> Aplicando migrações..."
+python manage.py migrate --noinput
 
-echo "Collect Static..."
-python3.9 manage.py collectstatic --noinput --clear
+echo "==> Coletando arquivos estáticos..."
+python manage.py collectstatic --noinput --clear
 
-npm install
-npm start
+echo "==> Populando glossário têxtil (se vazio)..."
+python manage.py seed_glossario
+
+echo "==> Build concluído."

@@ -1,9 +1,14 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('', include('home.urls')),
-    path('', include('carona.urls')),
-    path("admin/", admin.site.urls),
-    path('', include('admin_coreui.urls')),
+    path('admin/', admin.site.urls),
+    path('accounts/', include('apps.accounts.urls')),
+    path('transcricao/', include('apps.transcricao.urls')),
+    path('', include('apps.platform.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

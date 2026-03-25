@@ -1,0 +1,29 @@
+{% if jobs %}
+<table class="w-full text-sm">
+  <thead>
+    <tr class="text-left text-xs text-gray-500 uppercase tracking-wide border-b border-gray-100">
+      <th class="px-6 py-3 font-medium">Arquivo</th>
+      <th class="px-6 py-3 font-medium">Status</th>
+      <th class="px-6 py-3 font-medium">Duração</th>
+      <th class="px-6 py-3 font-medium">Data</th>
+      <th class="px-6 py-3 font-medium"></th>
+    </tr>
+  </thead>
+  <tbody class="divide-y divide-gray-50">
+    {% for job in jobs %}
+    {% include "transcricao/partials/job_row.html" %}
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="flex flex-col items-center justify-center py-16 text-center">
+  <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+    <svg class="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+    </svg>
+  </div>
+  <p class="text-gray-500 font-medium">Nenhuma transcrição ainda</p>
+  <p class="text-gray-400 text-xs mt-1">Conecte seu OneDrive e selecione um arquivo de áudio para começar.</p>
+</div>
+{% endif %}

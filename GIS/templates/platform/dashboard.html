@@ -1,0 +1,52 @@
+{% extends "layouts/platform.html" %}
+
+{% block title %}Dashboard — GIS Plataforma{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-900">Bem-vindo, {{ request.user.username }}</h2>
+    <p class="text-gray-500 mt-1">Selecione um serviço abaixo para começar.</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for key, service in services.items %}
+    <a href="{% url service.index_url %}"
+       class="group bg-white rounded-2xl border border-gray-200 p-6
+              hover:border-indigo-300 hover:shadow-md transition-all duration-200">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 bg-indigo-50 group-hover:bg-indigo-100 rounded-xl
+                    flex items-center justify-center transition-colors shrink-0">
+          <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="font-semibold text-gray-900">{{ service.name }}</h3>
+            <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+              v{{ service.version }}
+            </span>
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed">{{ service.description }}</p>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center text-sm font-medium text-indigo-600
+                  group-hover:text-indigo-700">
+        Acessar
+        <svg class="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+    </a>
+    {% empty %}
+    <div class="col-span-3 text-center py-16 text-gray-400">
+      <p>Nenhum serviço disponível.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

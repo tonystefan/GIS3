@@ -1,0 +1,99 @@
+{% extends "layouts/platform.html" %}
+
+{% block title %}Transcrição — GIS Plataforma{% endblock %}
+{% block page_title %}Transcrição de Reuniões{% endblock %}
+
+{% block header_actions %}
+<div class="flex items-center gap-3">
+  <a href="{% url 'transcricao:glossario' %}"
+     class="text-gray-600 hover:text-gray-900 text-sm font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+    Glossário
+  </a>
+  <button @click="$dispatch('open-upload')"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+    + Nova transcrição
+  </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div x-data="{ uploadOpen: false }" @open-upload.window="uploadOpen = true">
+
+  <!-- Modal: Upload de áudio -->
+  <div x-show="uploadOpen"
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60"
+       @click.self="uploadOpen = false"
+       style="display:none">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg">
+      <div class="flex items-center justify-between p-5 border-b">
+        <h2 class="font-semibold text-gray-900">Enviar arquivo de áudio</h2>
+        <button @click="uploadOpen = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <form method="post" action="{% url 'transcricao:job_create' %}"
+            enctype="multipart/form-data" class="p-5 space-y-4">
+        {% csrf_token %}
+
+        <!-- Dropzone -->
+        <div x-data="{ fileName: '' }"
+             class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-indigo-300 transition-colors">
+          <input type="file"
+                 name="audio_file"
+                 id="audio_file"
+                 accept=".mp3,.mp4,.m4a,.wav,.ogg,.webm,.flac,.aac,.wma"
+                 required
+                 class="hidden"
+                 @change="fileName = $event.target.files[0]?.name || ''">
+
+          <label for="audio_file" class="cursor-pointer">
+            <div class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+              </svg>
+            </div>
+            <p x-show="!fileName" class="text-sm text-gray-500">
+              Clique para selecionar ou arraste o arquivo<br>
+              <span class="text-xs text-gray-400 mt-1 block">MP3, MP4, M4A, WAV, OGG, FLAC (até 25MB por chunk)</span>
+            </p>
+            <p x-show="fileName" class="text-sm font-medium text-indigo-600" x-text="fileName"></p>
+          </label>
+        </div>
+
+        <p class="text-xs text-gray-400 text-center">
+          Baixe o arquivo do OneDrive e envie aqui. O .docx ficará disponível para download após a transcrição.
+        </p>
+
+        <div class="flex gap-3 justify-end pt-2">
+          <button type="button" @click="uploadOpen = false"
+                  class="text-gray-600 text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            Cancelar
+          </button>
+          <button type="submit"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors">
+            Enviar e transcrever
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Jobs list -->
+  <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-semibold text-gray-900">Jobs de Transcrição</h2>
+      <span class="text-sm text-gray-400">{{ jobs.count }} total</span>
+    </div>
+    <div id="job-list">
+      {% include "transcricao/partials/job_list.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

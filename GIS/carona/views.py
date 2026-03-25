@@ -55,8 +55,9 @@ class ParticipantesUso(TemplateView):
         context = {}    
         lista_pessoas3 = Participante.objects.filter().values('pessoa__nome').annotate(soma_preco=Sum('carona__preco_km'))
         lista_pessoas = Participante.objects.filter().order_by('pessoa')
+        query1 = lista_pessoas
         lista = ()
-        
+
 
 
         context['pessoa_list'] = lista_pessoas

@@ -1,0 +1,31 @@
+{% if job.status == 'completed' %}
+<span class="inline-flex items-center gap-1 text-sm font-medium text-green-700 bg-green-50 border border-green-200 px-3 py-1.5 rounded-full">
+  <span class="w-2 h-2 bg-green-500 rounded-full"></span> Concluído
+</span>
+{% elif job.status == 'processing' %}
+<span class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-full"
+      id="job-status-badge"
+      hx-get="{% url 'transcricao:job_status' job.pk %}"
+      hx-trigger="every 5s"
+      hx-target="#job-status-badge"
+      hx-swap="outerHTML">
+  <svg class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+  </svg>
+  Processando...
+</span>
+{% elif job.status == 'failed' %}
+<span class="inline-flex items-center gap-1 text-sm font-medium text-red-700 bg-red-50 border border-red-200 px-3 py-1.5 rounded-full">
+  <span class="w-2 h-2 bg-red-500 rounded-full"></span> Falha
+</span>
+{% else %}
+<span class="inline-flex items-center gap-1 text-sm font-medium text-gray-600 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-full"
+      id="job-status-badge"
+      hx-get="{% url 'transcricao:job_status' job.pk %}"
+      hx-trigger="every 8s"
+      hx-target="#job-status-badge"
+      hx-swap="outerHTML">
+  <span class="w-2 h-2 bg-gray-400 rounded-full"></span> Aguardando
+</span>
+{% endif %}

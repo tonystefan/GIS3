@@ -1,0 +1,150 @@
+{% extends "layouts/platform.html" %}
+
+{% block title %}{{ job.nome_arquivo }} — Transcrição{% endblock %}
+{% block page_title %}Detalhe da Transcrição{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'transcricao:index' %}"
+   class="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-1">
+  ← Voltar
+</a>
+{% if job.status == 'completed' and job.ata %}
+<a href="{% url 'transcricao:job_download_docx' job.pk %}"
+   class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+  </svg>
+  Baixar .docx
+</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+
+  <!-- Status card -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">{{ job.onedrive_file_name }}</h2>
+        <p class="text-sm text-gray-400 mt-1">{{ job.onedrive_folder_path }}</p>
+      </div>
+      <div id="job-status-badge"
+           {% if job.status == 'pending' or job.status == 'processing' %}
+           hx-get="{% url 'transcricao:job_status' job.pk %}"
+           hx-trigger="every 5s"
+           hx-target="#job-status-badge"
+           hx-swap="outerHTML"
+           {% endif %}>
+        {% include "transcricao/partials/status_badge.html" %}
+      </div>
+    </div>
+
+    <dl class="mt-4 grid grid-cols-3 gap-4 text-sm">
+      <div>
+        <dt class="text-gray-400">Criado em</dt>
+        <dd class="font-medium text-gray-900 mt-0.5">{{ job.created_at|date:"d/m/Y H:i" }}</dd>
+      </div>
+      {% if job.duracao_formatada != '—' %}
+      <div>
+        <dt class="text-gray-400">Duração</dt>
+        <dd class="font-medium text-gray-900 mt-0.5">{{ job.duracao_formatada }}</dd>
+      </div>
+      {% endif %}
+      {% if job.concluido_em %}
+      <div>
+        <dt class="text-gray-400">Concluído em</dt>
+        <dd class="font-medium text-gray-900 mt-0.5">{{ job.concluido_em|date:"d/m/Y H:i" }}</dd>
+      </div>
+      {% endif %}
+    </dl>
+
+    {% if job.status == 'failed' and job.erro %}
+    <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+      <p class="text-xs font-medium text-red-700 mb-1">Erro:</p>
+      <pre class="text-xs text-red-600 overflow-auto whitespace-pre-wrap">{{ job.erro }}</pre>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if job.status == 'completed' and job.ata %}
+  {% with ata=job.ata %}
+
+  <!-- Ata card -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
+    <div class="border-b pb-4">
+      <h3 class="text-xl font-bold text-gray-900">{{ ata.titulo }}</h3>
+      <p class="text-sm text-gray-500 mt-1">
+        {{ ata.data_reuniao|date:"d/m/Y" }}
+        {% if ata.local %} · {{ ata.local }}{% endif %}
+      </p>
+    </div>
+
+    {% if ata.participantes %}
+    <div>
+      <h4 class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Participantes</h4>
+      <p class="text-sm text-gray-700">{{ ata.participantes }}</p>
+    </div>
+    {% endif %}
+
+    {% if ata.pauta %}
+    <div>
+      <h4 class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Pauta</h4>
+      <div class="text-sm text-gray-700 whitespace-pre-line">{{ ata.pauta }}</div>
+    </div>
+    {% endif %}
+
+    {% if ata.deliberacoes %}
+    <div>
+      <h4 class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Deliberações</h4>
+      <div class="text-sm text-gray-700 whitespace-pre-line">{{ ata.deliberacoes }}</div>
+    </div>
+    {% endif %}
+
+    {% if ata.acoes %}
+    <div>
+      <h4 class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Plano de Ação</h4>
+      <div class="overflow-x-auto rounded-lg border border-gray-100">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-indigo-50 text-indigo-800 text-xs uppercase tracking-wide">
+              <th class="px-4 py-2 text-left font-medium">Ação</th>
+              <th class="px-4 py-2 text-left font-medium">Responsável</th>
+              <th class="px-4 py-2 text-left font-medium">Prazo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            {% for acao in ata.acoes %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2.5 text-gray-800">{{ acao.acao }}</td>
+              <td class="px-4 py-2.5 text-gray-600">{{ acao.responsavel }}</td>
+              <td class="px-4 py-2.5 text-gray-600">{{ acao.prazo }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Transcrição bruta (colapsável) -->
+  <div x-data="{ open: false }" class="bg-white rounded-2xl border border-gray-200">
+    <button @click="open = !open"
+            class="w-full flex items-center justify-between px-6 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-2xl transition-colors">
+      <span>Transcrição completa</span>
+      <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 transition-transform text-gray-400"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </button>
+    <div x-show="open" x-collapse class="px-6 pb-6">
+      <div class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap bg-gray-50 rounded-lg p-4 max-h-96 overflow-auto font-mono">{{ job.transcricao_processada }}</div>
+    </div>
+  </div>
+  {% endwith %}
+  {% endif %}
+
+</div>
+{% endblock %}

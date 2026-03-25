@@ -1,0 +1,77 @@
+{% extends "layouts/platform.html" %}
+
+{% block title %}Glossário Têxtil — GIS Plataforma{% endblock %}
+{% block page_title %}Glossário de Termos Têxteis{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'transcricao:index' %}"
+   class="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-1">← Voltar</a>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+
+  <!-- Formulário de adição -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6">
+    <h2 class="font-semibold text-gray-900 mb-4">Adicionar termo</h2>
+    <form hx-post="{% url 'transcricao:glossario_create' %}"
+          hx-target="#glossario-table"
+          hx-swap="innerHTML"
+          hx-on::after-request="this.reset()"
+          class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {% csrf_token %}
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">Termo correto *</label>
+        <input type="text" name="termo_correto" required
+               placeholder="Ex: urdidura"
+               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">Categoria</label>
+        <select name="categoria"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          {% for value, label in categorias %}
+          <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="block text-xs font-medium text-gray-600 mb-1">
+          Variantes fonéticas
+          <span class="text-gray-400">(separadas por vírgula)</span>
+        </label>
+        <input type="text" name="variantes"
+               placeholder="Ex: urdidúra, urdidura, ardidura"
+               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Descrição/contexto</label>
+        <input type="text" name="descricao"
+               placeholder="Opcional: explique quando esse termo é usado"
+               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <div class="sm:col-span-2 flex justify-end">
+        <button type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors">
+          Adicionar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabela de termos -->
+  <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+      <h2 class="font-semibold text-gray-900">Termos cadastrados ({{ termos.count }})</h2>
+    </div>
+    <div id="glossario-table">
+      {% include "transcricao/partials/glossario_table.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

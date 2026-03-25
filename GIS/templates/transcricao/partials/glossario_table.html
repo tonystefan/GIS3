@@ -1,0 +1,44 @@
+{% if termos %}
+<table class="w-full text-sm">
+  <thead>
+    <tr class="text-left text-xs text-gray-500 uppercase tracking-wide border-b border-gray-100">
+      <th class="px-6 py-3 font-medium">Termo correto</th>
+      <th class="px-6 py-3 font-medium">Categoria</th>
+      <th class="px-6 py-3 font-medium">Variantes</th>
+      <th class="px-6 py-3 font-medium"></th>
+    </tr>
+  </thead>
+  <tbody class="divide-y divide-gray-50">
+    {% for termo in termos %}
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-3 font-medium text-gray-900">{{ termo.termo_correto }}</td>
+      <td class="px-6 py-3">
+        <span class="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">
+          {{ termo.get_categoria_display }}
+        </span>
+      </td>
+      <td class="px-6 py-3 text-gray-500 text-xs">
+        {% if termo.variantes %}
+          {{ termo.variantes|join:", " }}
+        {% else %}
+          <span class="text-gray-300">—</span>
+        {% endif %}
+      </td>
+      <td class="px-6 py-3 text-right">
+        <button hx-delete="{% url 'transcricao:glossario_delete' termo.pk %}"
+                hx-target="#glossario-table"
+                hx-swap="innerHTML"
+                hx-confirm="Excluir o termo '{{ termo.termo_correto }}'?"
+                class="text-red-400 hover:text-red-600 text-xs font-medium transition-colors">
+          Excluir
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="text-center py-12 text-gray-400 text-sm">
+  Nenhum termo cadastrado. Adicione termos do vocabulário têxtil acima.
+</div>
+{% endif %}
